@@ -8,4 +8,4 @@ Requirements:
 - It is recommend to build [openCV](https://github.com/opencv/opencv) from source for local testing
 - [Google coral](https://coral.ai/).  Check out Google's USB and installable M.2 modules.  They allow low power devices to operate real-time.
 
-Please clone the official YOLOv7 code from the [official repo](https://github.com/WongKinYiu/yolov7).
+Please clone the official YOLOv7 code from the [their repo](https://github.com/WongKinYiu/yolov7).
