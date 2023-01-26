@@ -5,6 +5,7 @@ Requirements:
 
 - Python 3.8
 - See requirements.txt, there are a lot.
-- (optional) [Google coral](https://coral.ai/)
+- It is recommend to build [openCV](https://github.com/opencv/opencv) from source for local testing
+- [Google coral](https://coral.ai/).  Check out Google's USB and installable M.2 modules.  They allow low power devices to operate real-time.
 
 Please clone the official YOLOv7 code from the [official repo](https://github.com/WongKinYiu/yolov7).
