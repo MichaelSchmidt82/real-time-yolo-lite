@@ -5,8 +5,17 @@ import numpy as np
 FRAME_SKIP = 30
 
 
-# Draws bounding box around detections
 def draw_boxes(frame, data):
+    """initial docstring
+
+    Args:
+        frame (_type_): a cv2.VideoCapture frame
+        data (dict): data passing key/values pairs
+
+            - type: the classification of the object
+            - box: x1, y1 and x2, y2 coordinance (NYI)
+    """
+
     color = (0, 255, 0) # bgr
     for item in data:
         bounding_box = item.get('box')
@@ -22,7 +31,7 @@ def draw_boxes(frame, data):
 
     cv2.putText(img=frame,
                 text=label,
-                org=(bounding_box[0], bounding_box[1] - 10), # offset, above rectangle
+                org=(bounding_box[0], bounding_box[1] - 10), # offset text above rectangle
                 fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                 fontScale=0.5,
                 color=color,
@@ -42,11 +51,13 @@ while local_source.isOpened():
         frame_cnt = 0
 
     _, frame = local_source.read()
-    _, jpg = cv2.imencode('.jpg', frame) # for debuggit for now
+    _, jpg = cv2.imencode('.jpg', frame) # for debugging for now
+    cv2.imshow('current frame', jpg)
+    # Work on a single JPEG for now
 
-    #TODO Work on JPEG or stream will occur here
+    #TODO use Queue object and mutex/lock pattern for stream frames
 
-    cv2.waitKey(1) # 1 ms
+    cv2.waitKey(1)
 
 # release resources
 local_source.release()
