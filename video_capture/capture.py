@@ -54,6 +54,7 @@ while local_source.isOpened():
     _, jpg = cv2.imencode('.jpg', frame) # for debugging for now
     cv2.imshow('current frame', jpg)
     # Work on a single JPEG for now
+    # cv2.imwrite('frame.jpg', jpg)
 
     #TODO use Queue object and mutex/lock pattern for stream frames
 
