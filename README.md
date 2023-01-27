@@ -5,5 +5,5 @@ Requirements:
 
 - Python 3.7
 - See requirements.txt, there are a lot.
-- It is recommend to [build OpenCV from source](https://docs.opencv.org/4.x/d7/d9f/tutorial_linux_install.html) for local testing
+- It is recommend to [build OpenCV from source](https://docs.opencv.org/4.x/d7/d9f/tutorial_linux_install.html) for local testing.
 - [Google coral](https://coral.ai/).  Check out Google's USB and installable M.2 modules.  They allow low power devices to operate real-time.  You kinda need this.
