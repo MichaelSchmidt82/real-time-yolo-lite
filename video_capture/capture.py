@@ -13,8 +13,8 @@ def draw_boxes(frame, data):
         label = item.get('type')
 
     cv2.rectangle(img=frame,
-                  pt1=(bounding_box[0],bounding_box[1]),
-                  pt2=(bounding_box[2],bounding_box[3]),
+                  pt1=(bounding_box[0], bounding_box[1]),
+                  pt2=(bounding_box[2], bounding_box[3]),
                   color=color,
                   fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                   thickness=2,
@@ -22,7 +22,7 @@ def draw_boxes(frame, data):
 
     cv2.putText(img=frame,
                 text=label,
-                org=(bounding_box[0],bounding_box[1] - 10), # offset, above rectangle
+                org=(bounding_box[0], bounding_box[1] - 10), # offset, above rectangle
                 fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                 fontScale=0.5,
                 color=color,
