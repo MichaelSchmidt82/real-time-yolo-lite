@@ -8,6 +8,10 @@ FRAME_SKIP = 30
 def draw_boxes(frame, data):
     """initial docstring
 
+    I'm actually unsure if this is needed since yolov7's export.py end2end
+    parameter includes "end-to-end ONNX graph which does both bounding box
+    prediction and NMS."
+
     Args:
         frame (_type_): a cv2.VideoCapture frame
         data (dict): data passing key/values pairs
@@ -31,30 +35,31 @@ def draw_boxes(frame, data):
 
     cv2.putText(img=frame,
                 text=label,
-                org=(bounding_box[0], bounding_box[1] - 10), # offset text above rectangle
+                org=(bounding_box[0], bounding_box[1] - 10), # above rectangle
                 fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                 fontScale=0.5,
                 color=color,
                 thickness=2,
                 lineType=cv2.LINE_AA)
 
+frame_cnt = 0
 
-local_source = cv2.VideoCapture('rtsp://oak.home.lan:8100/stream0') # lan: "Mighty Oak"
-# remote_video = cv2.VideoCapture('rtsp://odd.home.lan:9100/stream0') # lan: "Object Detection Device"
+# lan: "Mighty Oak"
+local_source = cv2.VideoCapture('rtsp://oak.home.lan:8100/stream0')
 
+# lan: Object Detection Device
+# remote_video = cv2.VideoCapture('rtsp://odd.home.lan:9100/stream0')
 while local_source.isOpened():
 
     frame_cnt += 1
     if frame_cnt % FRAME_SKIP:
         continue
-    else:
-        frame_cnt = 0
 
     _, frame = local_source.read()
     _, jpg = cv2.imencode('.jpg', frame) # for debugging for now
     cv2.imshow('current frame', jpg)
     # Work on a single JPEG for now
-    # cv2.imwrite('frame.jpg', jpg)
+    # cv2.imwrite(f'frame{frame_cnt}.jpg', jpg)
 
     #TODO use Queue object and mutex/lock pattern for stream frames
 
