@@ -104,6 +104,7 @@ while local_source.isOpened():
     if frame_num % FRAME_SKIP:
         continue
 
+    # TODO: next up, this will thread :)
     _, frame = local_source.read()
     #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) # might need to happen sooner
 
