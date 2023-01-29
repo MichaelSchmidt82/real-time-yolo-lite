@@ -1,13 +1,18 @@
 import os
 import cv2
-import numpy as np
-import onnxruntime as ort
-import tensorflow as tf
 import random
+import numpy as np
+
+import tensorflow as tf
 import matplotlib.pyplot as plt
 plt.rcParams["figure.figsize"] = (16, 16)
 
-names = ('person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
+
+YOLO_INPUT_SHAPE = (640, 640) #* You can not change the shape the model was trained on.
+FRAME_SKIP = 2
+CUDA = False
+PRJ_PATH = os.getcwd()
+NAMES = ('person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
          'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
          'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
          'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
@@ -17,14 +22,8 @@ names = ('person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', '
          'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear',
          'hair drier', 'toothbrush')
 
-FRAME_SKIP = 5
-CUDA = False
-PRJ_PATH = os.getcwd()
-providers = ['CUDAExecutionProvider', 'CPUExecutionProvider'] if CUDA else ['CPUExecutionProvider']
-session = ort.InferenceSession(f'{PRJ_PATH}/yolov7/yolov7.onnx', providers=providers)
 
-
-def display(frame, scale_deltas, ratio, colors, outputs, names=names):
+def display(frame, scale_deltas, ratio, colors, outputs, names=NAMES):
 
     for (_, x0, y0, x1, y1, cls_id, score) in outputs:
         bound_box = np.array([x0, y0, x1, y1])
@@ -33,7 +32,7 @@ def display(frame, scale_deltas, ratio, colors, outputs, names=names):
         bound_box = bound_box.round().astype(np.int32).tolist()
         cls_id = int(cls_id)
         score = round(float(score), 3)
-        score = round(score * 100) #?
+        score = round(score * 100)
         name = names[cls_id]
         color = colors[name]
         label = f'{name} {score}%'
@@ -54,14 +53,11 @@ def display(frame, scale_deltas, ratio, colors, outputs, names=names):
         cv2.imshow('VIDEO', frame)
 
 
-def letterbox(input_img, new_shape=(640, 640), color=(114, 114, 114), auto=True, scale_up=True, stride=32):
+def letterbox(input_img, new_shape=YOLO_INPUT_SHAPE, color=(114, 114, 114), auto=True, scale_up=True, stride=32):
+
+
     # Resize and pad image while meeting stride-multiple constraints
-
     old_shape = input_img.shape[:2] # current shape [height, width]
-
-    # if it's just an int, assume it's a square
-    if isinstance(new_shape, int):
-        new_shape = (new_shape, new_shape)
 
     # Scale ratio (new / old)
     ratio = min(new_shape[0] / old_shape[0], new_shape[1] / old_shape[1])
@@ -90,21 +86,19 @@ def letterbox(input_img, new_shape=(640, 640), color=(114, 114, 114), auto=True,
 
 frame_cnt = 0
 
-colors = {name:[random.randint(0, 255) for _ in range(3)] for i,name in enumerate(names)}
+colors = {name:[random.randint(0, 255) for _ in range(3)] for i,name in enumerate(NAMES)}
 interpreter = tf.lite.Interpreter(model_path='yolov7_model.tflite')
 interpreter.allocate_tensors()
 
 input_details = interpreter.get_input_details()
-input_shape = input_details[0]['shape']
-
 output_details = interpreter.get_output_details()
 
 # lan: "Mighty Oak"
 local_source = cv2.VideoCapture('rtsp://oak.home.lan:8100/stream0')
+
 # lan: Object Detection Device
 # remote_video = cv2.VideoCapture('rtsp://odd.home.lan:9100/stream0')
 
-img, ratio, scale_deltas = None, None, None
 while local_source.isOpened():
 
     frame_cnt += 1
@@ -112,10 +106,9 @@ while local_source.isOpened():
         continue
 
     _, frame = local_source.read()
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) # might need to happen sooner
+    #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) # might need to happen sooner
 
     img, ratio, scale_deltas = letterbox(frame, auto=False)
-
     img = img.transpose((2, 0, 1))
     img = np.expand_dims(img, 0)
     img = np.ascontiguousarray(img)
