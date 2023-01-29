@@ -84,9 +84,9 @@ def letterbox(input_img, new_shape=YOLO_INPUT_SHAPE, color=(114, 114, 114), auto
     output_img = cv2.copyMakeBorder(output_img, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)  # add border
     return output_img, ratio, (delta_w, delta_h)
 
-frame_cnt = 0
-
+frame_num = 0
 colors = {name:[random.randint(0, 255) for _ in range(3)] for i,name in enumerate(NAMES)}
+
 interpreter = tf.lite.Interpreter(model_path='yolov7_model.tflite')
 interpreter.allocate_tensors()
 
@@ -95,14 +95,13 @@ output_details = interpreter.get_output_details()
 
 # lan: "Mighty Oak"
 local_source = cv2.VideoCapture('rtsp://oak.home.lan:8100/stream0')
-
 # lan: Object Detection Device
 # remote_video = cv2.VideoCapture('rtsp://odd.home.lan:9100/stream0')
 
 while local_source.isOpened():
 
-    frame_cnt += 1
-    if frame_cnt % FRAME_SKIP:
+    frame_num += 1
+    if frame_num % FRAME_SKIP:
         continue
 
     _, frame = local_source.read()
