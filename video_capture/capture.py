@@ -25,6 +25,10 @@ NAMES = ('person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', '
 
 def display(frame, scale_deltas, ratio, colors, outputs, names=NAMES):
 
+    if not outputs.any():
+        cv2.imshow('VIDEO', frame)
+        return
+
     for (_, x0, y0, x1, y1, cls_id, score) in outputs:
         bound_box = np.array([x0, y0, x1, y1])
         bound_box -= np.array(scale_deltas * 2)
@@ -79,6 +83,9 @@ def letterbox(input_img, new_shape=YOLO_INPUT_SHAPE, color=(114, 114, 114), auto
     # resize
     if old_shape[::-1] != hw_padding:
         output_img = cv2.resize(input_img, hw_padding, interpolation=cv2.INTER_LINEAR)
+    else:
+        output_img = input_img
+
     top, bottom = int(round(delta_h - 0.1)), int(round(delta_h + 0.1))
     left, right = int(round(delta_w - 0.1)), int(round(delta_w + 0.1))
     output_img = cv2.copyMakeBorder(output_img, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)  # add border
@@ -88,13 +95,11 @@ frame_num = 0
 colors = {name:[random.randint(0, 255) for _ in range(3)] for i,name in enumerate(NAMES)}
 
 interpreter = tf.lite.Interpreter(model_path='yolov7_model.tflite')
-interpreter.allocate_tensors()
-
 input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
 
 # lan: "Mighty Oak"
-local_source = cv2.VideoCapture('rtsp://oak.home.lan:8100/stream0')
+local_source = cv2.VideoCapture(0)
 # lan: Object Detection Device
 # remote_video = cv2.VideoCapture('rtsp://odd.home.lan:9100/stream0')
 
@@ -114,7 +119,7 @@ while local_source.isOpened():
     img = img.astype(np.float32)
     img /= 255
 
-    # interpreter.allocate_tensors()
+    interpreter.allocate_tensors()
     interpreter.set_tensor(input_details[0]['index'], img)
     interpreter.invoke()
 
