@@ -1,9 +1,10 @@
 import os
+
 import cv2
 import random
 import numpy as np
-
 import tensorflow as tf
+
 import matplotlib.pyplot as plt
 plt.rcParams["figure.figsize"] = (16, 16)
 
@@ -45,20 +46,28 @@ def display(frame, scale_deltas, ratio, colors, outputs, names=NAMES):
                       pt2=bound_box[2:],
                       color=color,
                       thickness=2)
+
+        (w, h), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 1)
+
+        cv2.rectangle(frame,
+                      pt1=(bound_box[0]-1, bound_box[1]),
+                      pt2=(bound_box[0]+w, bound_box[1]-h-6),
+                      color=color,
+                      thickness=-1)
+
         cv2.putText(img=frame,
-                    text=label,
-                    org=(bound_box[0], bound_box[1] - 2),
-                    fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=.5,
-                    color=[24, 15, 85],
-                    thickness=1,
-                    lineType=cv2.LINE_AA)
+            text=label,
+            org=(bound_box[0]+5, bound_box[1] - 5),
+            fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+            fontScale=.5,
+            color=[255, 255, 255],
+            thickness=1,
+            lineType=cv2.LINE_AA)
 
         cv2.imshow('VIDEO', frame)
 
 
 def letterbox(input_img, new_shape=YOLO_INPUT_SHAPE, color=(114, 114, 114), auto=True, scale_up=True, stride=32):
-
 
     # Resize and pad image while meeting stride-multiple constraints
     old_shape = input_img.shape[:2] # current shape [height, width]
@@ -89,6 +98,7 @@ def letterbox(input_img, new_shape=YOLO_INPUT_SHAPE, color=(114, 114, 114), auto
     top, bottom = int(round(delta_h - 0.1)), int(round(delta_h + 0.1))
     left, right = int(round(delta_w - 0.1)), int(round(delta_w + 0.1))
     output_img = cv2.copyMakeBorder(output_img, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)  # add border
+
     return output_img, ratio, (delta_w, delta_h)
 
 frame_num = 0
