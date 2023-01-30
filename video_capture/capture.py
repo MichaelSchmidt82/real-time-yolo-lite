@@ -13,22 +13,19 @@ YOLO_INPUT_SHAPE = (640, 640) #* You can not change the shape the model was trai
 FRAME_SKIP = 2
 CUDA = False
 PRJ_PATH = os.getcwd()
-NAMES = ('person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
-         'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
-         'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
-         'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
-         'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
-         'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
-         'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone',
-         'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear',
-         'hair drier', 'toothbrush')
+NAMES = ('person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat',
+         'traffic light', 'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat',
+         'dog', 'horse', 'sheep', 'cow', 'elephant', 'bear', 'zebra', 'giraffe', 'backpack',
+         'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee', 'skis', 'snowboard', 'sports ball',
+         'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard', 'tennis racket',
+         'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
+         'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair',
+         'couch','potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote',
+         'keyboard', 'cell phone','microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book',
+         'clock', 'vase', 'scissors', 'teddy bear','hair drier', 'toothbrush')
 
 
 def display(frame, scale_deltas, ratio, colors, outputs, names=NAMES):
-
-    if not outputs.any():
-        cv2.imshow('VIDEO', frame)
-        return
 
     for (_, x0, y0, x1, y1, cls_id, score) in outputs:
         bound_box = np.array([x0, y0, x1, y1])
@@ -47,8 +44,12 @@ def display(frame, scale_deltas, ratio, colors, outputs, names=NAMES):
                       color=color,
                       thickness=2)
 
-        (w, h), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 1)
-
+        # We do it backwards. get size/coordinates before *actually* create the text
+        (w, h), _ = cv2.getTextSize(text=label,
+                                    fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                                    fontScale=0.6,
+                                    thickness=1)
+        # class label
         cv2.rectangle(frame,
                       pt1=(bound_box[0]-1, bound_box[1]),
                       pt2=(bound_box[0]+w, bound_box[1]-h-6),
