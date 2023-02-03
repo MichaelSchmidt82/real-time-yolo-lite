@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 import face_recognition as fr
 
-import constants as const
+import common.constants as const
 
 people_colors = {}
 
@@ -25,44 +25,35 @@ def label_objects(frame, scale_deltas, ratio, colors, outputs, names=const.NAMES
         frame = create_labels(frame=frame, bounds=bounds, label=label, color=color)
         return frame
 
-def label_people(frame, encodings, colors):
+#TODO This won't scale well: O(faces * people), maybe numpy can help us
+def label_people(frame, people, colors):
 
-    people = {}
-    face_locations = fr.face_locations(frame)
+    # Give me names, faces, locations!
+    names = list(people.keys())
+    all_faces = []
+    locations = fr.face_locations(frame)
+    for _, face in people.items():
+        all_faces.append(face)
 
-    if face_locations:
-        face_locations = face_locations[0]
-    # need to segment here??
+    for loc in locations:
+        face = frame[loc[0]:loc[2], loc[3]:loc[1]]
+        #TODO use distance to add padding
+        enc_face = fr.face_encodings(face)
 
-    # create known faces before hand? ordered dict?
-    for name, enc in encodings.items():
+        #name, enc_face = people.popitem()
+        results = fr.api.compare_faces(known_face_encodings=all_faces,
+                                      face_encoding_to_check=enc_face[0])
 
-        all_encodings = [v for _, v in encodings.items()]
+        for i, res in enumerate(results):
+            if res:
+                print(loc)
+                frame = create_labels(frame=frame,
+                                      bounds=(loc[1], loc[0], loc[3], loc[2]),
+                                      label=names[i],
+                                      color=(114, 114, 114))
 
-        results = fr.api.compare_faces(known_face_encodings=all_encodings, face_encoding_to_check=enc)
-        for result in results:
-            if result:
-                people['name'] = face_locations
-
-            # face location is mirrored on X and Y
-                if face_locations:
-                    bounds = (
-                        face_locations[1],
-                        face_locations[0],
-                        face_locations[3],
-                        face_locations[2],
-                    )
-
-                    if name not in people_colors:
-                        color = random.choice(list(colors.values()))
-                        people_colors[name] = color
-
-                    color = people_colors[name]
-                    frame = create_labels(frame=frame,
-                                        bounds=bounds,
-                                        label=name,
-                                        color=color)
     return frame
+
 
 def letterbox(input_img,
               new_shape=const.YOLO_INPUT_SHAPE,
@@ -118,21 +109,21 @@ def create_labels(frame, bounds, label, color):
                                 fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                                 fontScale=0.6,
                                 thickness=1)
-    # class label
+    # class label, leters and number are arbitrary.  tune to your needs
     cv2.rectangle(frame,
-                pt1=(bounds[0]-1, bounds[1]),
-                pt2=(bounds[0]+w, bounds[1]-h-6),
+                pt1=(bounds[0] - 1, bounds[1]),
+                pt2=(bounds[0] + w, bounds[1] - h - 6),
                 color=color,
-                thickness=-1)
+                thickness= -1)
 
     cv2.putText(img=frame,
-        text=label,
-        org=(bounds[0]+5, bounds[1] - 5),
-        fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-        fontScale=.5,
-        color=[255, 255, 255],
-        thickness=1,
-        lineType=cv2.LINE_AA)
+                text=label,
+                org=(bounds[0] + 5, bounds[1] - 5),
+                fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                fontScale=.5,
+                color=(255, 255, 255), # TODO decide
+                thickness=1,
+                lineType=cv2.LINE_AA)
 
     return frame
 
