@@ -23,39 +23,48 @@ def label_objects(frame, scale_deltas, ratio, colors, outputs, names=const.NAMES
         label = f'{name} {score}%'
 
         frame = create_labels(frame=frame, bounds=bounds, label=label, color=color)
-        return frame
+
+    return frame
 
 #TODO This won't scale well: O(faces * people), maybe numpy can help us
-def label_people(frame, people, colors):
+def label_people(frame, peoples_faces, colors):
 
-    # Give me names, faces, locations!
-    names = list(people.keys())
-    all_faces = []
+    names = list(peoples_faces.keys())
+    if not names:
+        return frame
+
     locations = fr.face_locations(frame)
-    for _, face in people.items():
+    if not locations:
+        return frame
+
+    #TODO cache this
+    all_faces = []
+    for _, face in peoples_faces.items():
         all_faces.append(face)
 
     for loc in locations:
         face = frame[loc[0]:loc[2], loc[3]:loc[1]]
-        #TODO use distance to add padding
-        enc_face = fr.face_encodings(face)
+        #TODO use distance to add padding?
 
-        #name, enc_face = people.popitem()
+        enc_face = fr.face_encodings(face)
+        if not enc_face:
+            continue
+
         results = fr.api.compare_faces(known_face_encodings=all_faces,
                                       face_encoding_to_check=enc_face[0])
 
         for i, res in enumerate(results):
             if res:
-                print(loc)
                 frame = create_labels(frame=frame,
-                                      bounds=(loc[1], loc[0], loc[3], loc[2]),
+                                      bounds=(loc[3], loc[2], loc[1], loc[0]),
                                       label=names[i],
                                       color=(114, 114, 114))
+                                      #TODO Non-static color
 
     return frame
 
 
-def letterbox(input_img,
+def letterbox(image,
               new_shape=const.YOLO_INPUT_SHAPE,
               color=(114, 114, 114),
               auto=True,
@@ -63,12 +72,14 @@ def letterbox(input_img,
               stride=32):
 
     # Resize and pad image while meeting stride-multiple constraints
-    old_shape = input_img.shape[:2] # current shape [height, width]
+    old_shape = image.shape[:2] # current shape [height, width]
+    if isinstance(new_shape, int):
+        new_shape = (new_shape, new_shape)
 
     # Scale ratio (new / old)
     ratio = min(new_shape[0] / old_shape[0], new_shape[1] / old_shape[1])
     if not scale_up:  # only scale down, do not scale up (for better val mAP!)
-        ratio = min(ratio(input_img=input_img, ), 1.0)
+        ratio = min(ratio, 1.0)
 
     # Compute padding, HxW
     hw_padding = int(round(old_shape[1] * ratio)), int(round(old_shape[0] * ratio))
@@ -84,15 +95,13 @@ def letterbox(input_img,
 
     # resize
     if old_shape[::-1] != hw_padding:
-        output_img = cv2.resize(input_img, hw_padding, interpolation=cv2.INTER_LINEAR)
-    else:
-        output_img = input_img
+        image = cv2.resize(image, hw_padding, interpolation=cv2.INTER_LINEAR)
 
     top, bottom = int(round(delta_h - 0.1)), int(round(delta_h + 0.1))
     left, right = int(round(delta_w - 0.1)), int(round(delta_w + 0.1))
-    output_img = cv2.copyMakeBorder(output_img, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)  # add border
+    image = cv2.copyMakeBorder(image, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)  # add border
 
-    return output_img, ratio, (delta_w, delta_h)
+    return image, ratio, (delta_w, delta_h)
 
 
 
@@ -109,7 +118,7 @@ def create_labels(frame, bounds, label, color):
                                 fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                                 fontScale=0.6,
                                 thickness=1)
-    # class label, leters and number are arbitrary.  tune to your needs
+    # class label, letters and number are arbitrary.  tune to your needs
     cv2.rectangle(frame,
                 pt1=(bounds[0] - 1, bounds[1]),
                 pt2=(bounds[0] + w, bounds[1] - h - 6),
