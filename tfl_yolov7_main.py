@@ -59,7 +59,7 @@ def main():
                               colors=colors,
                               outputs=tfl_out)
 
-        frame = label_people(frame=frame, people_faces=people_faces, colors=colors)
+        frame = label_people(frame=frame, peoples_faces=people_faces, colors=colors)
 
         cv2.imshow('deep learning magic', frame)
         cv2.waitKey(1)
