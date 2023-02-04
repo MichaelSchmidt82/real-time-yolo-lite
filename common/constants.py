@@ -1,7 +1,7 @@
 import os
 
 YOLO_INPUT_SHAPE = (640, 640) #* You can not change the shape the model was trained on.
-FRAME_SKIP = 100
+FRAME_SKIP = 15
 CUDA = False
 PRJ_PATH = os.getcwd()
 NAMES = ('person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat',
