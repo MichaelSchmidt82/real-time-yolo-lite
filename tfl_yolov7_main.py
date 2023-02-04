@@ -15,7 +15,7 @@ from common.ml_utils import create_fr_encodings
 colors = {name:[random.randint(0, 255) for _ in range(3)] for i,name in enumerate(const.NAMES)}
 frame_num = 0
 
-faces_encs = create_fr_encodings()
+people_faces = create_fr_encodings()
 
 interpreter = tf.lite.Interpreter(model_path='yolov7/yolov7_model.tflite')
 input_details = interpreter.get_input_details()
@@ -36,7 +36,8 @@ def main():
         frame_num = 0
 
         _, frame = local_source.read()
-        #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) # might need to happen
+
+        #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) #? might need this, might not
 
         # object detection - pre-processing
         img, ratio, scale_deltas = letterbox(frame, auto=False)
@@ -58,10 +59,10 @@ def main():
                               colors=colors,
                               outputs=tfl_out)
 
-        frame = label_people(frame=frame, people=faces_encs, colors=colors)
+        frame = label_people(frame=frame, people_faces=people_faces, colors=colors)
 
         cv2.imshow('deep learning magic', frame)
-        cv2.waitKey(0)
+        cv2.waitKey(1)
 
     # release resources
     local_source.release()
