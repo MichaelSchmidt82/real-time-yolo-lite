@@ -17,7 +17,7 @@ What: real-time object detection using YOLOv7 in TensorFlow Lite.  (Bonus face d
 ### Some TODO's
 - I need a TPU to test on embedded evices.  (chip shortage).
 - Face recognition relies on `dlib'.
-- Color bounding boxes
+- Color selection for bounding boxes, especially for face recognition.
 
 ### Common Problems
 Different setups create unique situations.  Here are some common ones.
