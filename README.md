@@ -1,6 +1,6 @@
 # YOLOv7 in TensorFlow lite
 
-What: real-time object detection using YOLOv3 in TensorFlow Lite.  (Bonus face detection and recognition).  Ideal for embedded devices with Google Coral.
+What: real-time object detection using YOLOv7 in TensorFlow Lite.  (Bonus face detection and recognition).  Ideal for embedded devices with Google Coral.
 
 ** insert cool GIF here **
 
