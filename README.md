@@ -1,6 +1,6 @@
 # real-time-yolo-lite
 
-What: A home grown real-time object detection, face detection, and person recognition for embedded devices using YOLOv7 among other things.
+What: real-time object detection using YOLOv3 in TensorFlow Lite.  (Bonus face detection and recognition).  Ideal for embedded devices with Google Coral.
 
 ** insert cool GIF here **
 
@@ -11,13 +11,13 @@ What: A home grown real-time object detection, face detection, and person recogn
 - 📦️ See requirements.txt, there are a lot.
 - 📷️ It is recommend to [build OpenCV from source](https://docs.opencv.org/4.x/d7/d9f/tutorial_linux_install.html) for local testing (or just in general).  Use version 4.7.0.68.
 ### Hardware
-- 🌊️ [Google Coral](https://coral.ai/). They have low wattage USB and M.2 TPUs.  This is needed. ~for embedded devices~.
+- 🌊️ [Google Coral](https://coral.ai/). They have low wattage USB and M.2 TPUs.  This is ideal for embedded devices unless you have GPU support.
 
 
 ### Some TODO's
-- I need a TPU.  The chip shortage is real.
-- Early research suggests building `dlib` from source.  This will definatly need to happen as face recognition relies on `dlib`.
-- This project needs better organization, and I will begin to use a `develop` branch for a testing ground.
+- I need a TPU to test on embedded evices.  (chip shortage).
+- Face recognition relies on `dlib'.
+- Color bounding boxes
 
 ### Common Problems
 Different setups create unique situations.  Here are some common ones.
