@@ -6,7 +6,7 @@ import face_recognition as fr
 import common.constants as const
 
 
-def create_fr_encodings() -> dict:
+def create_face_encodings() -> dict:
 
     peoples_faces = OrderedDict()
     face_files = os.listdir(f'{const.PRJ_PATH}/content/people/')
