@@ -1,21 +1,21 @@
+# Python library
 import random
 
+# Third party
 import cv2
 import numpy as np
 import tensorflow as tf
 
-import matplotlib.pyplot as plt
-plt.rcParams["figure.figsize"] = (16, 16)
-
+# Project
 import common.constants as const
 from common.display import label_objects, label_people, letterbox
-from common.ml_utils import create_fr_encodings
+from common.ml_utils import create_face_encodings
 
 
 colors = {name:[random.randint(0, 255) for _ in range(3)] for i,name in enumerate(const.NAMES)}
 frame_num = 0
 
-people_faces = create_fr_encodings()
+people_faces = create_face_encodings()
 
 interpreter = tf.lite.Interpreter(model_path='yolov7/yolov7_model.tflite')
 input_details = interpreter.get_input_details()
