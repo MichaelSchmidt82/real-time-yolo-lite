@@ -1,4 +1,4 @@
-# small-eyeballs
+# eyeball-sam
 
 What: Real-time object detection, person detection, and face recognition using YOLOv7 in TensorFlow Lite targeted for embedded devices with Google Coral.
 
