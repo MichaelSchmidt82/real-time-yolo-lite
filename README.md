@@ -12,25 +12,11 @@ What: **Real-time object detection, person detection, and face recognition using
 ### Hardware
 - 🌊️ [Google Coral](https://coral.ai/). They have low-wattage USB and M.2 TPUs. A must for real-time video processing.
 
-### Some TODOs
-- I need a TPU to test on embedded devices.  (chip shortage).
-- Face recognition relies on `dlib`.
-- Color selection for bounding boxes, especially for face recognition is random and could use some polish.
+Usage:
+1. Create a virtual environment and `pip install -r requirements.txt`.
+2. Run the `create_tf_lite.ipynb` notebook to download use the model weights. This notebook will convert ONNX format to tf-lite.
+3. Run `tfl_yolov7_main.py`.
 
-### Common Problems
-Different setups create unique situations.  Here are some common ones.
+Note: by default, openCV will use your wedcam (`cv2.VideoCapture(0)`)
 
-- **My CPU doesn't have AVX and TensorFlow does not start.**
-    You can check out some [community builds](https://github.com/yaroslavvb/tensorflow-community-wheels/issues) and download them.  You can then use `pip install path/to/wheel` to finish the installation.  My personal [device](https://www.hardkernel.com/shop/odroid-h3-plus/) needed [this](https://github.com/yaroslavvb/tensorflow-community-wheels/issues/217) TF Nightly build. (it has no AVX, no GPU, with SSE4, Ubuntu 22.04, and Python 3.8." I got lucky, YMMV.
-
-- **My pip install complains about Protobuf versions.**
-
-    So far, this conflict is unavoidable.  It has not prevented the ONNX -> TF-lite conversion, however.  In the future, I hope to resolve this. 
-
-- **My `export.py` process fails.**
-
-    Some packages are still not listed in the requirements.txt, and you must manually install them.  Some common suspects are:
-    - pandas
-    - torch-vision
-    - seaborn
-    - tensorflow_probability
+This project was updated on 01/29/2024
