@@ -28,40 +28,41 @@ def label_objects(frame, scale_deltas, ratio, colors, outputs, names=const.NAMES
 
 #TODO This won't scale well: O(faces * people), maybe numpy can help us
 def label_people(frame, peoples_faces, colors):
-
-    names = list(peoples_faces.keys())
-    if not names:
-        return frame
-
-    locations = fr.face_locations(frame)
-    if not locations:
-        return frame
-
-    #TODO cache this
-    all_faces = []
-    for _, face in peoples_faces.items():
-        all_faces.append(face)
-
-    for loc in locations:
-        face = frame[loc[0]:loc[2], loc[3]:loc[1]]
-        #TODO use distance to add padding?
-
-        enc_face = fr.face_encodings(face)
-        if not enc_face:
-            continue
-
-        results = fr.api.compare_faces(known_face_encodings=all_faces,
-                                      face_encoding_to_check=enc_face[0])
-
-        for i, res in enumerate(results):
-            if res:
-                frame = create_labels(frame=frame,
-                                      bounds=(loc[3], loc[2], loc[1], loc[0]),
-                                      label=names[i],
-                                      color=(114, 114, 114))
-                                      #TODO Non-static color
-
     return frame
+    #
+    # names = list(peoples_faces.keys())
+    # if not names:
+    #     return frame
+    #
+    # locations = fr.face_locations(frame)
+    # if not locations:
+    #     return frame
+    #
+    # #TODO cache this
+    # all_faces = []
+    # for _, face in peoples_faces.items():
+    #     all_faces.append(face)
+    #
+    # for loc in locations:
+    #     face = frame[loc[0]:loc[2], loc[3]:loc[1]]
+    #     #TODO use distance to add padding?
+    #
+    #     enc_face = fr.face_encodings(face)
+    #     if not enc_face:
+    #         continue
+    #
+    #     results = fr.api.compare_faces(known_face_encodings=all_faces,
+    #                                   face_encoding_to_check=enc_face[0])
+    #
+    #     for i, res in enumerate(results):
+    #         if res:
+    #             frame = create_labels(frame=frame,
+    #                                   bounds=(loc[3], loc[2], loc[1], loc[0]),
+    #                                   label=names[i],
+    #                                   color=(114, 114, 114))
+    #                                   #TODO Non-static color
+    #
+    # return frame
 
 
 def letterbox(image,
@@ -135,4 +136,3 @@ def create_labels(frame, bounds, label, color):
                 lineType=cv2.LINE_AA)
 
     return frame
-
