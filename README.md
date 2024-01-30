@@ -8,7 +8,7 @@ What: **Real-time object detection, person detection, and face recognition using
 - 🖥️ Ubuntu 20.04
 - 🐍️ Python 3.8
 - 📦️ See requirements.txt, there are a lot.
-- 📷️ It is recommend to [build OpenCV from source](https://docs.opencv.org/4.x/d7/d9f/tutorial_linux_install.html) for local testing (or just in general).  Use version 4.7.0.68.
+- 📷️ It is recommend to ~[build OpenCV from source](https://docs.opencv.org/4.x/d7/d9f/tutorial_linux_install.html) for local testing (or just in general).~ use the requirements.txt version.
 ### Hardware
 - 🌊️ [Google Coral](https://coral.ai/). They have low-wattage USB and M.2 TPUs. A must for real-time video processing.
 
