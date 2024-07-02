@@ -1,7 +1,7 @@
 # eyeball-sam
 ![](https://github.com/MichaelSchmidt82/eyeball-sam/blob/main/content/cool_demo.gif)
 
-What: **Real-time object detection, person detection, and face recognition using YOLOv7 in TensorFlow Lite targeted for embedded devices with Google Coral hardware.**
+**What:**  Real-time object detection, person detection, and face recognition using YOLOv7 in TensorFlow Lite targeted for devices at the edge with Google Coral hardware.
 
 ## Requirements:
 ### Software
